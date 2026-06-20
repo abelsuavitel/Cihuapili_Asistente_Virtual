@@ -1,79 +1,95 @@
 import speech_recognition as sr
-import sys, pyjokes, pyttsx3, pyautogui, subprocess
+import sys, pyjokes, pyttsx3, pyautogui, subprocess, random
 import win32gui, win32con
 
 
-#Saludo
-Saludo = "Hola Señor Cruz, un gusto estar aqui para servirle"
-OidosCihuapili = sr.Recognizer()
+class CihuapiliPayasa:
 
-# Ordenes para Cihuapili:
-def broma():
+    SALUDO = [
+        "¿Que tal señor? ¿Como se encuentra hoy?",
+        "Buenas! Espero que este teniendo un excelente dia",
+        "Camara mi todo licenciado, ¿Que pedo, como andamos? ",
+        "Hola señor, hoy esta mas guapo de lo normal",
+        "Encendido y listo para el servicio"
+    ]
+    SALUDORANDOM = random.choice(SALUDO)
+    WIDGET_PATH = r"C:\Users\Abel\Desktop\+Ultra\Cihuapilli\Cihuapili_Widget.py"
+
+    def __init__(self):
+        self.oidos = sr.Recognizer()
+        self.widget = subprocess.Popen(["python", self.WIDGET_PATH])
+        pyttsx3.speak(self.SALUDORANDOM)
+
+    # --- Órdenes ---
+
+    def broma(self):
         bromilla = pyjokes.get_joke(language="es", category="all")
         pyttsx3.speak(bromilla)
 
-def Cierre():
-    pyttsx3.speak("Hasta la proxima, señor")
-    Widget.terminate()
-    sys.exit()
+    def cierre(self):
+        pyttsx3.speak("Hasta la proxima, señor")
+        self.widget.terminate()
+        sys.exit()
 
-def Pausa():
-    pyttsx3.speak("Pausa")
-    pyautogui.press("playpause")
+    def pausa(self):
+        pyttsx3.speak("Pausa")
+        pyautogui.press("playpause")
 
-def Siguiente():
-    pyttsx3.speak("¿que te parece esta?")
-    pyautogui.press("nexttrack")
+    def siguiente(self):
+        pyttsx3.speak("¿que te parece esta?")
+        pyautogui.press("nexttrack")
 
-def Anterior():
-    pyttsx3.speak("Regresando")
-    pyautogui.press("prevtrack")
-    pyautogui.press("prevtrack")
+    def anterior(self):
+        pyttsx3.speak("Regresando")
+        pyautogui.press("prevtrack")
+        pyautogui.press("prevtrack")
 
-def Esconderse():
-    EsconderWidget = win32gui.FindWindow(None, "Cihuapilli")
-    if EsconderWidget:
-        pyttsx3.speak("Chao")
-        win32gui.ShowWindow(EsconderWidget, win32con.SW_HIDE)
-    else:
-        pyttsx3.speak("No puedo esconderme, señor")
+    def esconderse(self):
+        ventana = win32gui.FindWindow(None, "Cihuapilli")
+        if ventana:
+            pyttsx3.speak("Chao")
+            win32gui.ShowWindow(ventana, win32con.SW_HIDE)
+        else:
+            pyttsx3.speak("No puedo esconderme, señor")
 
-def AbrirWidget():
-    AparecerWodget = win32gui.FindWindow(None, "Cihuapilli")
-    if AparecerWodget:
-        win32gui.ShowWindow(AparecerWodget, win32con.SW_SHOW)
-        pyttsx3.speak("Hola otra vez!!!!")
+    def aparecer(self):
+        ventana = win32gui.FindWindow(None, "Cihuapilli")
+        if ventana:
+            win32gui.ShowWindow(ventana, win32con.SW_SHOW)
+            pyttsx3.speak("Hola otra vez!!!!")
 
-# Funcion para realizar las ordenes:
-def realizar_orden(orden):
-    peronomegrites = orden.lower()
-    if "pili bromilla" in peronomegrites:
-        broma()
-    elif "adiós" in peronomegrites:
-        Cierre()
-    elif "pili pausa" in peronomegrites:
-        Pausa()
-    elif "pili siguiente" in peronomegrites:
-        Siguiente()
-    elif "pili anterior" in peronomegrites:
-        Anterior()
-    elif "pili abajo" in peronomegrites:
-        Esconderse()
-    elif "pili ven" in peronomegrites:
-        AbrirWidget()
+    # --- Lógica principal ---
 
-def escuchar_orden():
-    with sr.Microphone() as source:
-        OidosCihuapili.adjust_for_ambient_noise(source)
-        audio = OidosCihuapili.listen(source)
-    try:
-        orden = OidosCihuapili.recognize_google(audio, language="es-ES")
-        print(orden)
-        realizar_orden(orden)
-    except sr.UnknownValueError:
-        pass
+    def realizar_orden(self, orden):
+        orden = orden.lower()
+        comandos = {
+            "pili bromilla": self.broma,
+            "adiós":         self.cierre,
+            "pili pausa":    self.pausa,
+            "pili siguiente": self.siguiente,
+            "pili anterior": self.anterior,
+            "pili abajo":    self.esconderse,
+            "pili ven":      self.aparecer,
+        }
+        for clave, accion in comandos.items():
+            if clave in orden:
+                accion()
+                break
 
-Widget = subprocess.Popen("python Cihuapili_Widget.py")
-pyttsx3.speak(Saludo)
-while True:
-    escuchar_orden()
+    def escuchar_orden(self):
+        with sr.Microphone() as source:
+            self.oidos.adjust_for_ambient_noise(source)
+            audio = self.oidos.listen(source)
+        try:
+            orden = self.oidos.recognize_google(audio, language="es-ES")
+            self.realizar_orden(orden)
+        except sr.UnknownValueError:
+            pass
+
+    def iniciar(self):
+        while True:
+            self.escuchar_orden()
+
+
+if __name__ == "__main__":
+    CihuapiliPayasa().iniciar()
