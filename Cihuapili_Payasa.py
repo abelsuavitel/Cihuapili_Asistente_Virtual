@@ -1,11 +1,10 @@
 import speech_recognition as sr
-import sys
-import pyjokes
-import pyttsx3
-import pyautogui
+import sys, pyjokes, pyttsx3, pyautogui, subprocess
+import win32gui, win32con
+
 
 #Saludo
-Saludo = "Hola Licenciado, aqui la pili, lista  para lo que necesites"
+Saludo = "Hola Señor Cruz, un gusto estar aqui para servirle"
 OidosCihuapili = sr.Recognizer()
 
 # Ordenes para Cihuapili:
@@ -14,7 +13,8 @@ def broma():
         pyttsx3.speak(bromilla)
 
 def Cierre():
-    pyttsx3.speak("Adios Licenciado, hasta mañana")
+    pyttsx3.speak("Hasta la proxima, señor")
+    Widget.terminate()
     sys.exit()
 
 def Pausa():
@@ -30,6 +30,19 @@ def Anterior():
     pyautogui.press("prevtrack")
     pyautogui.press("prevtrack")
 
+def Esconderse():
+    EsconderWidget = win32gui.FindWindow(None, "Cihuapilli")
+    if EsconderWidget:
+        pyttsx3.speak("Chao")
+        win32gui.ShowWindow(EsconderWidget, win32con.SW_HIDE)
+    else:
+        pyttsx3.speak("No puedo esconderme, señor")
+
+def AbrirWidget():
+    AparecerWodget = win32gui.FindWindow(None, "Cihuapilli")
+    if AparecerWodget:
+        win32gui.ShowWindow(AparecerWodget, win32con.SW_SHOW)
+        pyttsx3.speak("Hola otra vez!!!!")
 
 # Funcion para realizar las ordenes:
 def realizar_orden(orden):
@@ -44,6 +57,10 @@ def realizar_orden(orden):
         Siguiente()
     elif "pili anterior" in peronomegrites:
         Anterior()
+    elif "pili abajo" in peronomegrites:
+        Esconderse()
+    elif "pili ven" in peronomegrites:
+        AbrirWidget()
 
 def escuchar_orden():
     with sr.Microphone() as source:
@@ -51,9 +68,12 @@ def escuchar_orden():
         audio = OidosCihuapili.listen(source)
     try:
         orden = OidosCihuapili.recognize_google(audio, language="es-ES")
+        print(orden)
         realizar_orden(orden)
     except sr.UnknownValueError:
         pass
 
+Widget = subprocess.Popen("python Cihuapili_Widget.py")
+pyttsx3.speak(Saludo)
 while True:
     escuchar_orden()
