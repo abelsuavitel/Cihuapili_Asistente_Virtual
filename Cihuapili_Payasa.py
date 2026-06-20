@@ -4,6 +4,8 @@ import pyjokes
 import pyttsx3
 import pyautogui
 
+#Saludo
+Saludo = "Hola Licenciado, aqui la pili, lista  para lo que necesites"
 OidosCihuapili = sr.Recognizer()
 
 # Ordenes para Cihuapili:
