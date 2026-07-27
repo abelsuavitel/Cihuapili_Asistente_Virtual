@@ -13,7 +13,7 @@ class CihuapiliPayasa:
         "Encendido y listo para el servicio"
     ]
     SALUDORANDOM = random.choice(SALUDO)
-    WIDGET_PATH = r"C:\Users\Abel\Desktop\+Ultra\Cihuapilli\Cihuapili_Widget.py"
+    WIDGET_PATH = "Pili_Widget.py"
 
     def __init__(self):
         self.oidos = sr.Recognizer()
@@ -27,7 +27,14 @@ class CihuapiliPayasa:
         pyttsx3.speak(bromilla)
 
     def cierre(self):
-        pyttsx3.speak("Hasta la proxima, señor")
+        DESPEDIDA = [
+            "Hasta la proxima, señor",
+            "Nos vemos guapo...,"
+            "Ha sido un gusto, adios",
+            "NO OLVIDEIS DEJAR UN LIKE, COMENTAR  Y SUSCRIBIRSE"
+        ]
+        DESPEDIDARANDOM = random.choice(DESPEDIDA)
+        pyttsx3.speak(DESPEDIDARANDOM)
         self.widget.terminate()
         sys.exit()
 
@@ -36,13 +43,40 @@ class CihuapiliPayasa:
         pyautogui.press("playpause")
 
     def siguiente(self):
-        pyttsx3.speak("¿que te parece esta?")
+        SIGUIENTE = [
+            "Cambiando de ritmo",
+            "¿Que te parece esta?",
+            "Deleitate con esta cancion",
+            "Espero que la siguiente rola te encante tanto como a mi"
+        ]
+        SIGUIENTERANDOM = random.choice(SIGUIENTE)
+        pyttsx3.speak(SIGUIENTERANDOM)
         pyautogui.press("nexttrack")
 
     def anterior(self):
         pyttsx3.speak("Regresando")
         pyautogui.press("prevtrack")
         pyautogui.press("prevtrack")
+
+    def Repetir(self):
+        pyttsx3.speak("Otra, Otra, Otra")
+        pyautogui.press("prevtrack")
+
+    def VolumenMaximo(self):
+        pyttsx3.speak("QUE SE ESCUCHE BIEN FUERTEEEEEE")
+        for _ in range(50):
+            pyautogui.press("volumeup")
+
+
+    def VolumenMinimo(self):
+        pyttsx3.speak("si, ok, entiendo...")
+        for _ in range(50):
+            pyautogui.press("volumedown")
+
+
+    def Bloquear(self):
+        pyttsx3.speak("Bloqueo, Bloqueo, Bloqueo")
+        pyautogui.hotkey("win", "l")
 
     def esconderse(self):
         ventana = win32gui.FindWindow(None, "Cihuapilli")
@@ -70,6 +104,10 @@ class CihuapiliPayasa:
             "pili anterior": self.anterior,
             "pili abajo":    self.esconderse,
             "pili ven":      self.aparecer,
+            "pili repítela": self.Repetir,
+            "pili bloquear": self.Bloquear,
+            "pili súbele":   self.VolumenMaximo,
+            "pili cállate": self.VolumenMinimo,
         }
         for clave, accion in comandos.items():
             if clave in orden:
@@ -82,6 +120,7 @@ class CihuapiliPayasa:
             audio = self.oidos.listen(source)
         try:
             orden = self.oidos.recognize_google(audio, language="es-ES")
+            print(orden)
             self.realizar_orden(orden)
         except sr.UnknownValueError:
             pass

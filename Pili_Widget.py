@@ -18,8 +18,8 @@ class Widget(QWidget):
             Qt.WindowType.WindowStaysOnTopHint   
         )
 
-        #Configuracion de la imagen
-        CihuapiliCara = "Teto.png"
+        #Configuracion de la imagen estatica
+        CihuapiliCara = "/Recursos/Imagenes/Teto.png"
         pixmap = QPixmap(CihuapiliCara)
         self.lbl = QLabel(self)
         self.lbl.setPixmap(pixmap)
