@@ -11,16 +11,16 @@ class Widget(QWidget):
     def Aparecer(self):
         #Configuracion de la ventana
         self.setGeometry(1143, 600, 200, 175)
-        self.setWindowTitle("Cihuapilli")
+        self.setWindowTitle("Rubi")
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint |  
             Qt.WindowType.WindowStaysOnTopHint   
         )
 
-        #Configuracion de la imagen estatica
-        CihuapiliCara = "/Recursos/Imagenes/Teto.png"
-        pixmap = QPixmap(CihuapiliCara)
+        #Configuracion de la imagen
+        RubiCara = "Recursos/Imagenes/Teto.png"
+        pixmap = QPixmap(RubiCara)
         self.lbl = QLabel(self)
         self.lbl.setPixmap(pixmap)
         self.lbl.setStyleSheet("background: transparent;")
